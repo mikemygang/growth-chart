@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+<title>Growth Chart</title>
+
+<!-- Bootstrap css-->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<!--Google Icon Font-->
+<link rel="stylesheet" href="fonts/iconfont/material-icons.css">
+<link rel="stylesheet" href="fonts/roboto.css">
+
+<!-- Propeller css -->
+<link rel="stylesheet" href="css/propeller.min.css">
+
+<!-- Loader css -->
+<link rel="stylesheet" href="css/loader-default.css">
+
+<!-- Base css -->
+<link href="css/base.css" rel="stylesheet">
+</head>
+<body>
+	<div class="loader loader-default is-active"></div>
+
+	<!-- Navbar -->
+	<nav class="navbar navbar-inverse pmd-navbar pmd-z-depth navbar-custom">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button class="navbar-toggle" aria-expanded="true" type="button"
+					data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<p class="navbar-text">
+					<span><i
+						class="pull-left material-icons pmd-sm navbar-icon-custom">settings</i>&nbsp;&nbsp;<span
+						id="person-info-name">Patient Name</span></span>
+				</p>
+			</div>
+			<div class="navbar-collapse collapse in"
+				id="bs-example-navbar-collapse-1" aria-expanded="true">
+				<ul class="nav navbar-nav">
+					<li><p class="navbar-text custom">
+							<span class="info-label">sex : </span><span id="person-info-sex">female</span>
+						</p></li>
+					<li><p class="navbar-text custom">
+							<span class="info-label">dob : </span><span id="person-info-dob">16/08/03</span>
+						</p></li>
+					<li><p class="navbar-text custom">
+							<span class="info-label">age : </span><span id="person-info-age">9y-10m-1w</span>
+						</p></li>
+					<!--                 <li><p class="navbar-text custom"><span>corrected-age : </span>9y-10m-1w</p></li> -->
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><p class="navbar-text inner">
+							<i class="pull-left material-icons pmd-sm navbar-icon-custom">print</i>Print
+							Graphs
+						</p></li>
+				</ul>
+			</div>
+		</div>
+		<div class="container-fluid appver" style="margin-top: 0;">
+			<p class='navbar-text custom navbar-center'>
+				<span>Growth Chart Version.2018.1</span>
+			</p>
+		</div>
+	</nav>
+
+	<!-- Content -->
+	<div id="container" class="container-fluid">
+		<div class="row skew-bar">
+			<div class="col-md-6">
+				<div class="skew-box active" id="0-36M">
+					<div class="age skew first">
+						<span> <a href="#" onclick="return false;">0 - 36
+								Months</a>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="skew-box" id="2-19Y">
+					<div class="age skew last">
+						<span> <a href="#" onclick="return false;">2 - 19 Years</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row switch-bar">
+			<div class="col-md-6">
+				<p class="navbar-text custom">
+					<span>last recording : </span>30/11/12&nbsp;&nbsp;&nbsp;&nbsp;9y -
+					3m - 2w
+				</p>
+			</div>
+			<div class="col-md-6"></div>
+		</div>
+		<div class="container-fluid graphs">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="pmd-card pmd-z-depth" style="display: none;">
+						<div class="pmd-card-title"></div>
+						<div class="pmd-card-body content-section">
+							<div id="height-chart"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="pmd-card pmd-z-depth" style="display: none;">
+						<div class="pmd-card-title"></div>
+						<div class="pmd-card-body content-section">
+							<div id="weight-chart"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="pmd-card pmd-z-depth" style="display: none;">
+						<div class="pmd-card-title"></div>
+						<div class="pmd-card-body content-section">
+							<div id="headcir-chart"></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6"></div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery before Propeller.js -->
+	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/propeller.min.js"></script>
+	<script type="text/javascript" src="js/highcharts.js"></script>
+	<script type="text/javascript" src="js/highcharts-more.js"></script>
+
+	<script type="text/javascript">
+		var PAGE_LOADED = false;
+		var FLAG_BUTTON;
+		var PAGE_SEX = "M";
+		var AREA_COLOR = {
+			M : "rgb(128, 191, 255)",
+			F : "rgb(255, 192, 203)"
+		};
+	
+		$(function GrowthChart() {
+			var loader = $(".loader");
+			var config = {
+				buttons : [
+					$("#0-36M"),
+					$("#2-19Y")
+				],
+				containers : {
+					weight : $("#weight-chart"),
+					height : $("#height-chart"),
+					headcir : $("#headcir-chart")
+				}
+			};
+	
+			function setPageLoad() {
+				if (!PAGE_LOADED) {
+					setTimeout(function() {
+						PAGE_LOADED = true;
+						if (loader.hasClass("is-active")) {
+							loader.removeClass("is-active");
+						}
+					}, 600);
+				}
+			}
+	
+			$.each(config.buttons, function(i, elem) {
+				if (elem.length) {
+					var id = elem.attr("id");
+					if (elem.hasClass("active")) {
+						FLAG_BUTTON = id.substr(id.length - 1);
+					}
+					elem.on("click", function() {
+						if (id.substr(id.length - 1) === FLAG_BUTTON) return;
+						if (PAGE_LOADED) {
+							PAGE_LOADED = false;
+							if (!loader.hasClass("is-active")) {
+								loader.addClass("is-active");
+							}
+						}
+						FLAG_BUTTON = id.substr(id.length - 1);
+						if (!elem.hasClass("active")) {
+							elem.addClass("active");
+						}
+						$.each(config.buttons, function(ii, oelem) {
+							if (oelem !== elem && oelem.hasClass("active")) {
+								oelem.removeClass("active");
+							}
+						});
+						loadGrowthChart();
+					});
+				}
+			});
+	
+			var guides = {
+				weight : {},
+				height : {},
+				headcir : {}
+			};
+			var person = {};
+	
+			function getDataSeries(obj, chart) {
+				var series = [];
+				if (obj.hasOwnProperty(chart) && obj[chart].hasOwnProperty(FLAG_BUTTON)) {
+					var data = obj[chart][FLAG_BUTTON];
+					series = data.series;
+				}
+				return series;
+			}
+	
+			function setPersonInfomation(data) {
+				person["weight"] = data.hasOwnProperty("weight") ? data.weight : {};
+				person["height"] = data.hasOwnProperty("height") ? data.height : {};
+				person["headcir"] = data.hasOwnProperty("headcir") ? data.headcir : {};
+	
+				person["name"] = data.name;
+				person["sex"] = data.sex == "M" ? "male" : "female";
+				person["dob"] = data.dob;
+				person["age"] = data.age;
+	
+				$('#person-info-name').text(person.name);
+				$('#person-info-sex').text(person.sex);
+				$('#person-info-dob').text(person.dob);
+				$('#person-info-age').text(person.age);
+	
+				PAGE_SEX = data.sex
+				$("body").css("background-color", AREA_COLOR[PAGE_SEX]);
+			}
+	
+			$.ajax({
+				url : 'js/data.json',
+				contentType : "application/json; charset=utf-8",
+				dataType : 'json',
+				success : function(dataPerson) {
+	
+					setPersonInfomation(dataPerson);
+	
+					$.ajax({
+						url : 'js/guide.json',
+						contentType : "application/json; charset=utf-8",
+						dataType : 'json',
+						success : function(dataGuides) {
+	
+							guides.weight = dataGuides.weight;
+							guides.height = dataGuides.height;
+							guides.headcir = dataGuides.headcir;
+	
+							loadGrowthChart();
+						},
+						statusCode : {
+							404 : function() {
+								alert('There was a problem with the server.  Try again soon! [Guides]');
+							}
+						}
+					});
+				},
+				statusCode : {
+					404 : function() {
+						alert('There was a problem with the server.  Try again soon! [Person]');
+					}
+				}
+			});
+	
+			var GLOBAL_OPTION = {
+				chart : {
+					type : 'spline',
+					zoomType : 'none',
+					events : {
+						load : setPageLoad
+					}
+				},
+				title : {
+					text : "chart title"
+				},
+				legend : {
+					layout : 'vertical',
+					align : 'left',
+					verticalAlign : 'top',
+					x : 100,
+					y : 10,
+					floating : true,
+					backgroundColor : (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+					borderWidth : 1
+				},
+				xAxis : {
+					min : 0,
+					max : 36,
+					tickInterval : 3,
+					minorTickInterval : 1,
+					minorTickLength : 1,
+					gridLineWidth : 1,
+					title : {
+						text : "x title"
+					}
+				},
+				yAxis : {},
+				credits : {
+					enabled : false
+				},
+				plotOptions : {
+					spline : {
+						lineWidth: 2,
+						marker : {
+							enabled : false,
+							symbol: "circle"
+						}
+					}
+				}
+			};
+	
+			function getOptions() {
+				GLOBAL_OPTION.xAxis.title.text = FLAG_BUTTON === "M" ? "AGE (MONTHS)" : "AGE (YEARS)";
+	
+				var FLAG_AGE_UNIT = FLAG_BUTTON === "M" ? "month" : "year";
+	
+				var options = {};
+	
+				var WEIGHT_OPTION = {
+					title : {
+						text : "WEIGHT"
+					},
+					yAxis : {
+						min : 0,
+						max : 20,
+						tickInterval : 1,
+						title : {
+							text : "WEIGHT (KG)"
+						}
+					},
+					plotOptions : {
+						series : {
+							tooltip : {
+								headerFormat : '<b>{series.name}</b><br>',
+								pointFormat : '{point.x} ' + FLAG_AGE_UNIT + ', {point.y} kg.'
+							}
+						}
+					}
+				}
+	
+				var HEIGHT_OPTION = {
+					title : {
+						text : FLAG_BUTTON === "M" ? "LENGTH" : "HEIGHT"
+					},
+					yAxis : {
+						min : 40,
+						max : 105,
+						tickInterval : 5,
+						title : {
+							text : FLAG_BUTTON === "M" ? "LENGTH (CM)" : "HEIGHT (CM)"
+						}
+					},
+					plotOptions : {
+						series : {
+							tooltip : {
+								headerFormat : '<b>{series.name}</b><br>',
+								pointFormat : '{point.x} ' + FLAG_AGE_UNIT + ', {point.y} cm.'
+							}
+						}
+					}
+				};
+	
+				var HEADCIR_OPTION = {
+					title : {
+						text : "HEAD CIRCUMFERENCE"
+					},
+					yAxis : {
+						min : 40,
+						max : 80,
+						tickInterval : 5,
+						title : {
+							text : "HEAD CIRCUMFERENCE (CM)"
+						}
+					},
+					xAxis : {
+						min : 0,
+						max : 15
+					},
+					plotOptions : {
+						series : {
+							tooltip : {
+								headerFormat : '<b>{series.name}</b><br>',
+								pointFormat : '{point.x} ' + FLAG_AGE_UNIT + ', {point.y} cm.'
+							}
+						}
+					}
+				};
+	
+				options["weight"] = $.extend(true, {}, GLOBAL_OPTION, WEIGHT_OPTION);
+				options["height"] = $.extend(true, {}, GLOBAL_OPTION, HEIGHT_OPTION);
+				options["headcir"] = $.extend(true, {}, GLOBAL_OPTION, HEADCIR_OPTION);
+	
+				return options;
+			}
+	
+			var OPTIONS = {};
+	
+			function loadGrowthChart() {
+				OPTIONS = getOptions();
+				clearCharts();
+				loadGuidesChart();
+				loadPersonChart();
+			}
+	
+			var charts = {};
+	
+			function loadGuidesChart() {
+				for (var chart in config.containers) {
+					if (config.containers.hasOwnProperty(chart)) {
+						var container = config.containers[chart];
+						var option = OPTIONS.hasOwnProperty(chart) ? OPTIONS[chart] : {};
+						var series = getDataSeries(guides, chart);
+						var parent = container.parents("div.pmd-card");
+						if (series.length) {
+							if (parent.is(":hidden")) {
+								parent.show();
+							}
+							option.series = series;
+							charts[chart] = container.highcharts(option);
+						} else {
+							if (parent.is(":visible")) {
+								parent.hide();
+							}
+						}
+					}
+				}
+			}
+	
+			function loadPersonChart() {
+				for (var chart in config.containers) {
+					if (config.containers.hasOwnProperty(chart)) {
+						var container = config.containers[chart];
+						var option = OPTIONS.hasOwnProperty(chart) ? OPTIONS[chart] : {};
+	
+						var series = getDataSeries(person, chart);
+
+						var parent = container.parents("div.pmd-card");
+						if (series.length) {
+							series[0]["color"] = AREA_COLOR[PAGE_SEX];
+							series[0]["type"] = "scatter";
+							if (parent.is(":hidden")) {
+								parent.show();
+							}
+							if (charts.hasOwnProperty(chart)) {
+								var hc = charts[chart].highcharts();
+								hc.addSeries(series[0]);
+							} else {
+								option.series = series;
+								charts[chart] = container.highcharts(option);
+							}
+						}
+					}
+				}
+			}
+	
+			function clearCharts() {
+				var chart;
+				for (var key in charts) {
+					chart = charts[key];
+					if (chart) chart.empty();
+				}
+				charts = {};
+			}
+		});
+	</script>
+
+</body>
+</html>
